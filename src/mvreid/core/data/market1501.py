@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from mvreid.core._typing import ReidSample
 from mvreid.core.data.base import MultiViewReidDataset
 
@@ -11,11 +13,13 @@ type CameraId = int
 class Market1501Dataset(MultiViewReidDataset[EntityId, CameraId]):
     """The Market-1501 dataset class."""
 
-    def __init__(self, n_views: int) -> None:
+    def __init__(self, data_root: Path, n_views: int) -> None:
         super().__init__(n_views=n_views)
+
+        self._data_root: Path = data_root
 
     def __len__(self) -> int:
         pass
 
-    def __getitem__(self, index) -> ReidSample[EntityId, CameraId]:
+    def __getitem__(self, index) -> "ReidSample[EntityId, CameraId]":
         pass
