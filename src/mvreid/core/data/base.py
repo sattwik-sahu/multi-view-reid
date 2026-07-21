@@ -4,7 +4,7 @@ from mvreid.core._typing import ReidSample
 
 
 class MultiViewReidDataset[TEntity: int | str, TCameraId: int | str](
-    torch.utils.data.Dataset[ReidSample[TCameraId, TEntity]]
+    torch.utils.data.Dataset[ReidSample[TEntity, TCameraId]]
 ):
     """The base class for a multi-view reidentification dataset."""
 
