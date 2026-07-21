@@ -7,7 +7,15 @@ authors = [
     { name = "Sattwik Kumar Sahu", email = "sattwik21@iiserb.ac.in" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "datasets>=5.0.0",
+    "lightning>=2.6.5",
+    "stable-pretraining>=0.1.8",
+    "tensordict>=0.13.0",
+    "torch>=2.13.0",
+    "torchvision>=0.28.0",
+    "transformers>=5.14.1",
+]
 
 [project.scripts]
 mvreid = "mvreid:main"
@@ -15,3 +23,22 @@ mvreid = "mvreid:main"
 [build-system]
 requires = ["uv_build>=0.11.27,<0.12.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ipython>=9.15.0",
+    "marimo>=0.23.14",
+    "pytest>=9.1.1",
+    "ruff>=0.15.22",
+]
+plot = [
+    "matplotlib>=3.11.1",
+    "plotly>=6.9.0",
+    "seaborn>=0.13.2",
+]
+train = [
+    "hydra-core>=1.3.4",
+    "hydra-joblib-launcher>=1.2.0",
+    "omegaconf>=2.3.1",
+    "wandb>=0.28.1",
+]
