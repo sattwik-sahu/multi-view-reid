@@ -42,4 +42,4 @@ jobs:
 
       # 7. Run the test suite using pytest
       - name: Run Tests with pytest
-        run: uv run pytest
+        run: uv run pytest --cov=src/mvreid --cov-report=term-missing
