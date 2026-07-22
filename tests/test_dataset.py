@@ -1,8 +1,12 @@
+import os
+
 import pytest
 import torch
 
 from mvreid.core._typing import ReidSample
 from mvreid.core.data.dummy import DummyDataset
+
+RUN_DATASETS = os.getenv("RUN_DATASETS") == "1"
 
 DATASETS_TO_TEST = [(DummyDataset, lambda _: {})]
 
@@ -70,6 +74,7 @@ def test_reid_sample_creation_and_manipulation():
     assert stacked.entity_id == ["person_001", "person_001"]
 
 
+@pytest.mark.skipif(not RUN_DATASETS, reason="Set RUN_DATASETS=1 to run dataset tests")
 @pytest.mark.parametrize("dataset_class, setup_fn", DATASETS_TO_TEST)
 def test_dataset_contract(dataset_class, setup_fn, tmp_path):
     """Loops through all datasets, runs their custom setups, and validates their contract."""
