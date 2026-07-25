@@ -38,11 +38,12 @@ class Veri776Dataset(MultiViewReidDataset[int, int]):
         super().__init__(n_views=n_views)
         self.root: Path = Path(root)
         self.relabel: bool = relabel
+        self.split: str = split
 
-        self.data_path = self.root / split
-        self.transform = transforms.Compose(
+        self.data_path: Path = self.root / split
+        self.transform: transforms.Transform = transforms.Compose(
             [
-                transforms.Resize((224, 224)),
+                transforms.Resize((128, 128)),
                 transforms.ToImage(),
                 transforms.ToDtype(torch.float32, scale=True),
             ]
@@ -50,12 +51,12 @@ class Veri776Dataset(MultiViewReidDataset[int, int]):
         self._samples_by_id: dict[int, list[tuple[Path, int]]] = defaultdict(list)
         self._parse_dataset()
 
-        self.entity_ids = sorted(list(self._samples_by_id.keys()))
+        self.entity_ids: list[int] = sorted(list(self._samples_by_id.keys()))
 
         if self.relabel:
-            self.pid_map = {old: new for new, old in enumerate(self.entity_ids)}
+            self.pid_map: dict[int,int] = {old: new for new, old in enumerate(self.entity_ids)}
         else:
-            self.pid_map = {old: old for old in self.entity_ids}
+            self.pid_map : dict[int,int]= {old: old for old in self.entity_ids}
 
     def _parse_dataset(self) -> None:
         """Parses file name and groups them by PID and CamID"""
@@ -111,12 +112,10 @@ class Veri776Dataset(MultiViewReidDataset[int, int]):
             selected_images.append(img)
             selected_cams.append(cam_id)
 
-        # images shape: (n_views, 3, H, W)
-        images_tensor = torch.stack(selected_images)
+        # images shape: (n_views, 3, H, W
 
         return ReidSample(
-            images=images_tensor,
+            images=selected_images,
             camera_ids=selected_cams,
             entity_id=mapped_pid,
-            batch_size=[],
         )
