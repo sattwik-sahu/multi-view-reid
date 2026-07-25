@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test-and-lint:
+    name: Run Linting and Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Set up the latest version of uv (leveraging build cache)
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      # 3. Set up Python (reads the project's default version)
+      - name: Set up Python
+        run: uv python install
+
+      # 4. Install all dependencies matching the locked versions in uv.lock
+      # --locked ensures the environment strictly matches the lockfile.
+      - name: Install dependencies
+        run: uv sync --locked --dev
+
+      # 5. Run Ruff linter (outputs annotations directly to the GitHub PR files)
+      - name: Run Ruff Check
+        run: uv run ruff check --output-format=github .
+
+      # 6. Run Ruff formatter check to ensure files are consistently formatted
+      - name: Run Ruff Format Check
+        run: uv run ruff format --check .
+
+      # 7. Run the test suite using pytest
+      - name: Run Tests with pytest
+        run: uv run pytest --cov=src/mvreid --cov-report=term-missing

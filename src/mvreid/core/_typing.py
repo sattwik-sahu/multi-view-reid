@@ -1,8 +1,10 @@
+from typing import Any
+
 import torch
 from tensordict import TensorClass
 
 
-class ReidSample[TEntityId: int | str, TCameraId: int | str](TensorClass):
+class ReidSample(TensorClass, frozen=True):
     """A sample from the reidentification dataset."""
 
     images: torch.Tensor
@@ -11,8 +13,8 @@ class ReidSample[TEntityId: int | str, TCameraId: int | str](TensorClass):
     Shape: (b, 3, h, w)
     """
 
-    camera_ids: list[TCameraId]
+    camera_ids: list[Any]
     """The list of camera IDs from which the images were captured."""
 
-    entity_id: TEntityId
+    entity_id: Any
     """The ID of the entity in the images."""
