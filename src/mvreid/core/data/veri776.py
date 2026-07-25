@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from collections import defaultdict
 from pathlib import Path
 from typing import Literal
@@ -29,7 +28,7 @@ class Veri776Dataset(MultiViewReidDataset):
     ) -> None:
         # Initialize the base class which stores n_views in self._n_views
         super().__init__(n_views=n_views)
-        
+
         self.root: Path = Path(root)
         self.relabel: bool = relabel
         self.split: str = split
@@ -39,9 +38,8 @@ class Veri776Dataset(MultiViewReidDataset):
             "test": "image_test",
             "query": "image_query",
         }
-        
-        self.data_path: Path = self.root / split_map[split]
 
+        self.data_path: Path = self.root / split_map[split]
 
         self.transform: transforms.Transform = transform or transforms.Compose(
             [
@@ -81,7 +79,7 @@ class Veri776Dataset(MultiViewReidDataset):
 
             if len(parts) < 2:
                 continue
-            
+
             # Extract PID (Vehicle ID)
             pid = int(parts[0])
             if pid <= 0:  # Skip background or junk
@@ -90,7 +88,7 @@ class Veri776Dataset(MultiViewReidDataset):
             # Extract Camera ID (e.g., 'c001' -> 1)
             cam_str = parts[1]
             camid = int(cam_str[1:]) if cam_str.startswith("c") else int(cam_str)
-            
+
             # Group image paths by their identity
             self._samples_by_id[pid].append((path, camid))
 
@@ -108,7 +106,7 @@ class Veri776Dataset(MultiViewReidDataset):
         # 2. Get all available images for this specific vehicle identity
         available_images = self._samples_by_id[original_pid]
 
-        # 3. Randomly select exactly n_views indices. 
+        # 3. Randomly select exactly n_views indices.
         # If n_views > images for this PID, replacement sampling occurs automatically.
         indices = torch.randint(0, len(available_images), (self._n_views,)).tolist()
 
@@ -119,7 +117,7 @@ class Veri776Dataset(MultiViewReidDataset):
         for i in indices:
             path, cam_id = available_images[i]
             img = Image.open(path).convert("RGB")
-            
+
             if self.transform:
                 img = self.transform(img)
 
