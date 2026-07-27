@@ -4,6 +4,14 @@
 
 ## Usage
 
+### Training
+
+To start training a model, use the `train` script provided.
+
+```bash
+train model=vit_tiny dataset=veri776 lr=1.5e-4
+```
+
 ## Contributing
 
 To contribute to the project, follow the steps below.
