@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Literal
 
 import torch
-from PIL import Image
+from torchvision.io import read_image
 from torchvision.transforms import v2 as transforms
 
 from mvreid.core._typing import ReidSample
@@ -110,13 +110,13 @@ class Veri776Dataset(MultiViewReidDataset):
         # If n_views > images for this PID, replacement sampling occurs automatically.
         indices = torch.randint(0, len(available_images), (self._n_views,)).tolist()
 
-        selected_images = []
+        selected_images: list[torch.Tensor] = []
         selected_cams = []
 
         # 4. Load and transform each selected view
         for i in indices:
             path, cam_id = available_images[i]
-            img = Image.open(path).convert("RGB")
+            img = read_image(path=path)
 
             if self.transform:
                 img = self.transform(img)
