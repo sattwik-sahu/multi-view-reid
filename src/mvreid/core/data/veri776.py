@@ -27,11 +27,10 @@ class Veri776Dataset(MultiViewReidDataset):
         relabel: bool = True,
     ) -> None:
         # Initialize the base class which stores n_views in self._n_views
-        super().__init__(n_views=n_views)
+        super().__init__(n_views=n_views, split=split)
 
-        self.root: Path = Path(root)
-        self.relabel: bool = relabel
-        self.split: str = split
+        self._root: Path = Path(root)
+        self._relabel: bool = relabel
 
         split_map = {
             "train": "image_train",
@@ -39,9 +38,9 @@ class Veri776Dataset(MultiViewReidDataset):
             "query": "image_query",
         }
 
-        self.data_path: Path = self.root / split_map[split]
+        self._data_path: Path = self._root / split_map[self._split]
 
-        self.transform: transforms.Transform = transform or transforms.Compose(
+        self._transform: transforms.Transform = transform or transforms.Compose(
             [
                 transforms.Resize((128, 128)),
                 transforms.ToImage(),
@@ -54,23 +53,23 @@ class Veri776Dataset(MultiViewReidDataset):
         self._parse_dataset()
 
         # Unique vehicle identities for entity-based indexing
-        self.entity_ids: list[int] = sorted(list(self._samples_by_id.keys()))
+        self._entity_ids: list[int] = sorted(list(self._samples_by_id.keys()))
 
         # Mapping for continuous PID labels [0, N-1]
-        if self.relabel:
-            self.pid_map: dict[int, int] = {
-                old: new for new, old in enumerate(self.entity_ids)
+        if self._relabel:
+            self._pid_map: dict[int, int] = {
+                old: new for new, old in enumerate(self._entity_ids)
             }
         else:
-            self.pid_map: dict[int, int] = {old: old for old in self.entity_ids}
+            self._pid_map: dict[int, int] = {old: old for old in self._entity_ids}
 
     def _parse_dataset(self) -> None:
         """Parses filename and groups them by PID and CamID."""
-        if not self.data_path.exists():
-            raise FileNotFoundError(f"Directory not found: {self.data_path}")
+        if not self._data_path.exists():
+            raise FileNotFoundError(f"Directory not found: {self._data_path}")
 
         # List all JPG images in the directory
-        image_paths = list(self.data_path.glob("*.jpg"))
+        image_paths = list(self._data_path.glob("*.jpg"))
 
         for path in image_paths:
             # Filename structure: [pid]_c[camid]_[frameid].jpg
@@ -94,14 +93,14 @@ class Veri776Dataset(MultiViewReidDataset):
 
     def __len__(self) -> int:
         """Returns the number of unique vehicle entities."""
-        return len(self.entity_ids)
+        return len(self._entity_ids)
 
     def __getitem__(self, index: int) -> ReidSample:
         """Fetches a multi-view sample for a specific vehicle."""
 
         # 1. Select the specific vehicle identity based on the index
-        original_pid = self.entity_ids[index]
-        mapped_pid = self.pid_map[original_pid]
+        original_pid = self._entity_ids[index]
+        mapped_pid = self._pid_map[original_pid]
 
         # 2. Get all available images for this specific vehicle identity
         available_images = self._samples_by_id[original_pid]
@@ -118,8 +117,8 @@ class Veri776Dataset(MultiViewReidDataset):
             path, cam_id = available_images[i]
             img = read_image(path=path)
 
-            if self.transform:
-                img = self.transform(img)
+            if self._transform:
+                img = self._transform(img)
 
             selected_images.append(img)
             selected_cams.append(cam_id)

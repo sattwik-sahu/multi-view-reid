@@ -1,0 +1,17 @@
+# @techaadii fill in the correct values here
+
+dataset_factory:
+  _target_: mvreid.core.data.VeRi776Dataset
+  _partial_: true
+  n_views: 4
+  root: null
+  split: null
+  transform: null
+  relabel: null
+
+
+# DataLoader and data throughput parameters
+batch_size: 8
+num_workers: 4
+pin_memory: true
+persistent_workers: true

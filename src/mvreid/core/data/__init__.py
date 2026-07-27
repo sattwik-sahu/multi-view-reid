@@ -6,8 +6,7 @@ from torch.utils.data import DataLoader
 
 from mvreid.core.data.base import MultiViewReidDataset
 from mvreid.core.data.dummy import DummyDataset
-
-# from mvreid.core.data.veri776 import VeRi776Dataset
+from mvreid.core.data.veri776 import Veri776Dataset
 
 
 class ReidDataModule(L.LightningDataModule):
@@ -69,5 +68,5 @@ __all__ = [
     "MultiViewReidDataset",
     "ReidDataModule",
     "DummyDataset",
-    # "VeRi776Dataset",
+    "Veri776Dataset",
 ]

@@ -21,6 +21,7 @@ dependencies = [
 
 [project.scripts]
 mvreid = "mvreid:main"
+mvreid-train = "mvreid.train"
 
 [build-system]
 requires = ["uv_build>=0.11.27,<0.12.0"]
