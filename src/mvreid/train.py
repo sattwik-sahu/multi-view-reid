@@ -11,7 +11,6 @@ from omegaconf import DictConfig, OmegaConf
 
 # Package imports
 from mvreid.core.data import ReidDataModule
-from mvreid.core.model import ImageEncoder
 
 
 @hydra.main(version_base=None, config_path="../../configs", config_name="config")
