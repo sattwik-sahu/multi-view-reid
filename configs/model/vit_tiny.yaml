@@ -1,0 +1,12 @@
+_target_: mvreid.core.model.ImageEncoder
+
+backbone:
+  _target_: stable_pretraining.backbone.utils.vit_hf
+  size: "tiny"
+  image_size: 128
+  patch_size: 8
+  pretrained: false
+  use_mask_token: false
+
+visreg_lambda: 0.1
+lr: 1e-4
