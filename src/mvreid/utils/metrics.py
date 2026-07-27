@@ -1,3 +1,5 @@
+from typing import override
+
 import torch
 from einops import rearrange, repeat
 from torchmetrics import Metric
@@ -9,6 +11,7 @@ class MultiViewEuclideanMetric(Metric):
         # Gathers and concatenates embeddings across steps and DDP ranks
         self.add_state("embeddings", default=[], dist_reduce_fx="cat")
 
+    @override
     def update(self, embeddings: torch.Tensor):
         """
         Args:

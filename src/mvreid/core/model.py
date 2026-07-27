@@ -9,11 +9,11 @@ from mvreid.utils.visreg import VISReg
 
 class ImageEncoder(L.LightningModule):
     def __init__(
-        self, encoder: torch.nn.Module, visreg_lambda: float, lr: float
+        self, backbone: torch.nn.Module, visreg_lambda: float, lr: float
     ) -> None:
         super().__init__()
 
-        self._encoder = encoder
+        self._backbone = backbone
         self._visreg = VISReg()
         self._visreg_lambda: float = visreg_lambda
         self._lr: float = lr
@@ -35,7 +35,7 @@ class ImageEncoder(L.LightningModule):
         images_batched: torch.Tensor = rearrange(images, "b nv c h w -> (b nv) c h w")
 
         # Pass through encoder
-        embeddings: torch.Tensor = self._encoder(images_batched).last_hidden_state
+        embeddings: torch.Tensor = self._backbone(images_batched).last_hidden_state
 
         # Calculate loss
         cls_embeddings: torch.Tensor = rearrange(
@@ -70,7 +70,7 @@ class ImageEncoder(L.LightningModule):
         images_batched: torch.Tensor = rearrange(images, "b nv c h w -> (b nv) c h w")
 
         # Pass through encoder
-        embeddings = self._encoder(images_batched).last_hidden_state
+        embeddings = self._backbone(images_batched).last_hidden_state
 
         # Calculate loss
         cls_embeddings: torch.Tensor = rearrange(
@@ -82,7 +82,7 @@ class ImageEncoder(L.LightningModule):
         loss = (1 - self._visreg_lambda) * loss_emb + self._visreg_lambda * loss_visreg
 
         # Accumulate validation step embeddings into the TorchMetrics state
-        self.val_metrics.update(embeddings=cls_embeddings)
+        self.val_metrics.update(embeddings=cls_embeddings)  # type: ignore
 
         # Log step-level validation losses (corrected log keys to "val/")
         self.log_dict(
