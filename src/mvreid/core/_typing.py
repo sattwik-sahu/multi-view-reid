@@ -4,7 +4,7 @@ import torch
 from tensordict import TensorClass
 
 
-class ReidSample(TensorClass, frozen=True):
+class ReidSample(TensorClass):
     """A sample from the reidentification dataset."""
 
     images: torch.Tensor
