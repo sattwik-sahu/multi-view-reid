@@ -1,10 +1,8 @@
-dataset_factory:
-  _target_: mvreid.core.data.dummy.DummyDataset
-  _partial_: true
-  n_views: 4
-
-# DataLoader and data throughput parameters
+_target_: mvreid.core.data.DummyDataModule
+n_views: 4
 batch_size: 8
 num_workers: 4
 pin_memory: true
 persistent_workers: true
+train_length: 10
+val_length: 3

@@ -10,4 +10,3 @@ backbone:
 
 visreg_lambda: 0.1
 lr: 1e-4
-
