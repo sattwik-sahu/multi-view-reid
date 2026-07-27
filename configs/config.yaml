@@ -8,13 +8,13 @@ model_compile: true
 
 trainer:
   max_epochs: 50
-  precision: "bf16-mixed"
+  precision: "bf16-mixed"       # "bf16-mixed" (for newer architectures) or "16-mixed"
   accelerator: "gpu"
-  devices: 1
+  devices: 1                     # Set to "auto" or integer for multi-GPU
   strategy: "ddp_find_unused_parameters_false"
   gradient_clip_val: 1.0
   log_every_n_steps: 10
-  benchmark: true
+  benchmark: true                # Activates cudnn.benchmark for input size optimization
 
 logger:
   project: "mvreid"

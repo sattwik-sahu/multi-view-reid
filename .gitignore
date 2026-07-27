@@ -181,4 +181,4 @@ wandb/
 weights/
 outputs/
 multirun/
-
+wandb_resume.json
